@@ -1,0 +1,103 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Feb 22 16:29:27 2017
+
+@author: SantiagoSanchez
+"""
+
+import numpy as np
+
+
+kv = 525*np.exp(1j*0*np.pi/180);
+z1_sa= 17.6*np.exp(1j*90*np.pi/180);
+z2_sa=z1_sa;
+z0_sa= 6.2*np.exp(1j*90*np.pi/180);
+z1_sb= 42.2*np.exp(1j*90*np.pi/180);
+z0_sb= 29.5*np.exp(1j*90*np.pi/180);
+z1_l=  118.5*np.exp(1j*87*np.pi/180);
+z0_l=  463*np.exp(1j*81.7*np.pi/180);
+U_ae=  370.4*np.exp(1j*(-17)*np.pi/180);
+U_be=  334.9*np.exp(1j*(-67)*np.pi/180);
+I_LD=  1555*np.exp(1j*(-37)*np.pi/180) ;
+I_a0 = U_ae/(z0_sa + z1_sa + z2_sa ) ; # 
+I_a1 = I_a0 ;
+I_a2 = I_a0 ;
+l= 100;
+
+
+z_falla = U_ae/I_a0
+
+d = np.imag(z_falla)/np.imag(z1_l)
+
+
+a = 1 * np.exp(1j*120*np.pi/180) ;
+A = np.matrix([[1, 1, 1] , [1, a**2, a] , [1, a, a**2]]) ;
+I_f = A * np.matrix([[I_a0] , [I_a1] , [I_a2]]) ; 
+Di_a = ((1-d)*z1_l + z1_sb/z1_sa +z1_sb)*I_f
+k_f = (-d*(z1_l)+z1_l+z1_sb)/z1_sb+z1_sa+z1_l
+I_f2 =  Di_a/k_f
+d2 = np.imag(U_ae*np.conjugate(Di_a)*np.exp(1j*1*np.pi/180))/np.imag(z1_l*I_a0*np.conjugate(Di_a)*np.exp(1j*1*np.pi/180))
+#############
+
+k1 = -z1_l
+M1 = z1_sb+z1_sa+z1_l
+L1 = z1_sb +z1_l
+
+k0= -z0_l
+L0= z0_sa +z0_l 
+M0= z0_sa+z0_sb+z0_l
+
+
+kf1=k1*d + L1/M1
+kf2=kf1
+
+If1 = Di_a/kf1
+
+af1 = 1.5 + 0.5*1j*np.sqrt(3)
+af2 = 1.5 - 0.5*1j*np.sqrt(3)
+
+d3= np.imag(U_ae*np.conjugate(af1*Di_a + af2*I_a2)*np.exp(1j*kf1))/np.imag(I_a1*z1_l*np.conjugate(af1*Di_a + af2*I_a2)*np.exp(1j*kf1))
+
+
+x_ar = np.imag(z1_sa)
+r_ar = np.real(x_ar)
+x1_l = np.imag(z1_l) 
+teta = np.arctan(x_ar/r_ar)
+sigma = np.angle(z1_l)
+a = np.real((af1*Di_a + af2*I_a2)/I_a1*np.exp(kf1))
+b = np.imag((af1*Di_a + af2*I_a2)/I_a1*np.exp(kf1))
+
+
+d4 = x_ar/x1_l - ((r_ar/x1_l *np.tan(sigma)-x_ar/x1_l)/(a/b)*np.tan(sigma)-1)/1000
+
+
+p2 = k1*z1_l
+p1 = (L1*z1_l - k1*z1_sa) 
+p0 =  L1*z1_sa
+p00 = (af1*Di_a + af2*I_a2)*M1/I_a1
+
+gamma2 =np.array( np.real(p2)*np.imag(p00) - np.real(p00)*np.imag(p2))
+gamma1 =np.array( np.real(p1)*np.imag(p00) - np.real(p00)*np.imag(p1))
+gamma0 =np.array( np.real(p0)*np.imag(p00) - np.real(p00)*np.imag(p0))
+
+
+df1 =  -gamma1 - np.sqrt(gamma1*gamma1 - 4*gamma2*gamma0) /2*gamma2*100
+
+df2 =  -gamma1 + np.sqrt(gamma1*gamma1 - 4*gamma2*gamma0) /2*gamma2*100
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#plt.plot(x_prima_f,df)
