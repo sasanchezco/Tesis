@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Feb 26 19:19:12 2017
+
+@author: SantiagoSanchez
+"""
+
+
+
+# A NEW METHOD TO LOCATE FAULTS IN POWER NETWORKS BASED ON ELECTROMAGNETIC TIME REVERSAL
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.constants import c
+
+
+Z1=10**4
+Z2=10**4
+Zc=10
+x_f=8
+L=10
+
+def gamma(w):
+    return 1j*(w/c)
+
+def rho(Zi,Zc):
+    return (Zi-Zc)/(Zi+Zc)
+
+def U_f(w):
+    return 1/(1j*w)
+
+def U_A1(w):
+    value = ((1+rho(Z1,Zc))*np.exp(-gamma(w)*x_f))/(1+rho(Z1,Zc)*np.exp(-2*gamma(w)*x_f))*U_f(w)
+    return value
+def U_A2(w):
+    value = ((1+rho(Z2,Zc))*np.exp(-gamma(w)*(L-x_f)))/(1+rho(Z2,Zc)*np.exp(-2*gamma(w)*(L-x_f)))*U_f(w)
+    return value
+
+def I_A1_conj(w):
+    return np.conjugate(U_A1(w))/Z1
+
+def I_A2_conj(w):
+    return np.conjugate(U_A1(w))/Z2
+
+def I_f1(x,w):
+    value = ((1+rho(Z1,Zc))*np.exp(-gamma(w)*x))/(1+rho(Z1,Zc)*np.exp(-2*gamma(w)*x))*I_A1_conj(w)
+    return value
+
+def I_f2(x,w):
+    value = ((1+rho(Z2,Zc))*np.exp(-gamma(w)*(L-x)))/(1+rho(Z2,Zc)*np.exp(-2*gamma(w)*(L-x)))*I_A2_conj(w)
+    return value
+
+def I_f(x,w):
+    return I_f1(x,w)+I_f2(x,w)
+
+
+
+x_prima_f = np.arange(0,L,0.14)
+omega = 2*np.pi*10**6
+
+
+plt.plot(x_prima_f,np.abs(I_f(x_prima_f*omega,omega)/np.max(I_f(x_prima_f*omega,omega))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
