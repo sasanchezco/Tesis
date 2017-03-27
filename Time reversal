@@ -14,13 +14,13 @@ Created on Sun Feb 26 19:19:12 2017
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.constants import c
+# Seleccionar los parametros de la linea que se necesitan para provarse
 
-
-Z1=10**4
-Z2=10**4
-Zc=10
-x_f=8
-L=10
+Z1=[]**4
+Z2=[]**4
+Zc=[]
+x_f=[]
+L=[]
 
 def gamma(w):
     return 1j*(w/c)
